@@ -3,6 +3,18 @@
 {% block content %}
 
 
+<style>
+    input{
+        text-align: center;
+    }
+</style>
+
+
+{% for message in messages %}
+<div class="alert {{message.tags}}">
+    <p class="text-center">{{message}}</p>
+</div>
+{% endfor %}
   
   <!-- Employee Modal -->
   <div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -12,25 +24,72 @@
           <h5 class="modal-title" id="exampleModalLabel">Employee Login</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <form method="post" action="{% url 'employeelogin' %}" class="mx-5">
+            {% csrf_token %}
         <div class="modal-body">
-            <form class="mx-5">
+            
                 <div class="form-group">
                 <label for="recipient-name" class="col-form-label">Username:</label>
-                <input type="text" class="form-control" id="recipient-name">
+                <input type="text" name = "username" class="form-control" id="recipient-name">
                 </div>
                 <div class="form-group">
                 <label for="recipient-password" class="col-form-label">Password:</label>
-                <input type="password" class="form-control" id="recipient-password">
+                <input type="password" name = "password" class="form-control" id="recipient-password">
                 </div>
-            </form>
+            
+            <br>
+            <p class="text-center">Dont have an account ? <span class="text-primary"><a href="#" data-bs-toggle="modal" data-bs-target="#employeeSignupModal">Signup</a></span> Here</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Login</button>
+          <button type="submit" class="btn btn-primary">Login</button>
         </div>
+    </form>
       </div>
     </div>
   </div>
+
+  <!-- Employee Signup Modal -->
+  <div class="modal fade" id="employeeSignupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-light">
+          <h5 class="modal-title" id="exampleModalLabel">Employee Signup</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="post" action="{% url 'employeesignup' %}" class="mx-5">
+            {% csrf_token %}
+        <div class="modal-body">
+            
+                <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Username:</label>
+                <input type="text" name="username" class="form-control" id="recipient-name" required>
+                </div>
+                <div class="form-group">
+                <label for="recipient-password" class="col-form-label">Password:</label>
+                <input type="password" name="password" class="form-control" id="recipient-password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="recipient-password" class="col-form-label">Re-enter Password:</label>
+                    <input type="password" name="repassword" class="form-control" id="recipient-password" required>
+                </div>
+            
+            <br>
+            <p class="text-center">Already have an account ? <span class="text-primary"><a href="#" data-bs-toggle="modal" data-bs-target="#employeeModal">Login</a></span> Here</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <input type="submit" class="btn btn-primary">
+        </div>
+    </form>
+      </div>
+    
+    </div>
+  </div>
+
+
+
 
   <!-- Manager Modal -->
   <div class="modal fade" id="managerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -40,27 +99,70 @@
           <h5 class="modal-title" id="exampleModalLabel">Manager Login</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <form method="post" action="{% url 'managerlogin' %}" class="mx-5">
+            {% csrf_token %}
         <div class="modal-body">
-            <div class="container">
-                <form class="mx-5">
-                    <div class="form-group">
-                    <label for="recipient-name" class="col-form-label">Username:</label>
-                    <input type="text" class="form-control" id="recipient-name">
-                    </div>
-                    <div class="form-group">
-                    <label for="recipient-password" class="col-form-label">Password:</label>
-                    <input type="password" class="form-control" id="recipient-password">
-                    </div>
-                </form>
-            </div>
+            
+                <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Username:</label>
+                <input type="text" name="username" class="form-control" id="recipient-name">
+                </div>
+                <div class="form-group">
+                <label for="recipient-password" class="col-form-label">Password:</label>
+                <input type="password" name="password" class="form-control" id="recipient-password">
+                </div>
+            
+            <br>
+            <p class="text-center">Dont have an account ? <span class="text-primary"><a href="#" data-bs-toggle="modal" data-bs-target="#managerSignupModal">Signup</a></span> Here</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="submit" class="btn btn-primary">Login</button>
         </div>
+    </form>
       </div>
     </div>
   </div>
+
+  <!-- Manager Signup Modal -->
+  <div class="modal fade" id="managerSignupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-light">
+          <h5 class="modal-title" id="exampleModalLabel">Manager Signup</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="post" action="{% url 'managersignup' %}" class="mx-5">
+            {% csrf_token %}
+        <div class="modal-body">
+            
+                <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Username:</label>
+                <input type="text" name="username" class="form-control" id="recipient-name" required>
+                </div>
+                <div class="form-group">
+                <label for="recipient-password" class="col-form-label">Password:</label>
+                <input type="password" name="password" class="form-control" id="recipient-password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="recipient-password" class="col-form-label">Re-enter Password:</label>
+                    <input type="password" name="repassword" class="form-control" id="recipient-password" required>
+                </div>
+            
+            <br>
+            <p class="text-center">Already have an account ? <span class="text-primary"><a href="#" data-bs-toggle="modal" data-bs-target="#managerModal">Login</a></span> Here</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <input type="submit" class="btn btn-primary">
+        </div>
+    </form>
+      </div>
+    
+    </div>
+  </div>
+
 
 
 <div id="carouselExampleSlidesOnly" class="carousel slide">
