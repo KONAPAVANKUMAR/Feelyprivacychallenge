@@ -2,6 +2,18 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login,logout,authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
+from pymongo import MongoClient
+
+import pymongo 
+    
+    
+# establishing connection 
+# to the database
+client = pymongo.MongoClient("mongodb://localhost:27017/") 
+    
+# Database name 
+db = client["meeting"] 
+
 
 
 # Create your views here.
@@ -59,7 +71,13 @@ def employeeLogin(request):
         return redirect('/')
 
 def managerHomePageView(request):
-    return render(request, 'meetingapp/managerhomepage.html')
+    meetings = MeetingModel.objects.filter(manager=request.user)
+    meetingmodelcollection = db["meetingapp_meetingmodel"] 
+    meetings = meetingmodelcollection.find({})
+    print([meeting for meeting in meetings])
+    context = {'meetings':meetings}
+    
+    return render(request, 'meetingapp/managerhomepage.html',context)
 
 def employeeHomePageView(request):
     return render(request, 'meetingapp/employeehomepage.html')
@@ -67,4 +85,17 @@ def employeeHomePageView(request):
 def logoutUser(request):
     logout(request)
     return redirect('landingpage')
+
+from .models import MeetingModel
+# crud operations for meeting
+# pending <-- authorisation
+def createMeeting(request):
+    MeetingModel(datetime = request.POST['datetime'],manager = request.user).save()
+    return redirect('managerhomepage')
+
+def deleteMeeting(request,id):
+    MeetingModel.objects.filter(id=id).delete()
+    return redirect('managerhomepage')
+
+
 

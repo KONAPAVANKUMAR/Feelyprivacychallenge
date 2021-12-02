@@ -9,5 +9,8 @@ urlpatterns = [
     path('logoutuser/', logoutUser, name='logoutuser'),
     path('manager/', managerHomePageView, name='managerhomepage'),
     path('employee/', employeeHomePageView, name='employeehomepage'),
-    
+
+    # crud operations
+    path('manager/create/', createMeeting, name='createmeeting'),
+    path('manager/<int:pk>/delete/', deleteMeeting),
 ]
