@@ -9,6 +9,7 @@ urlpatterns = [
     path('logoutuser/', logoutUser, name='logoutuser'),
     path('manager/', managerHomePageView, name='managerhomepage'),
     path('employee/', employeeHomePageView, name='employeehomepage'),
+    path('employee/schedule/<int:id>/',employeeScheduleView, name='employeeschedulepage'),
 
     # crud operations
     path('meeting/create/', createMeeting, name='createmeeting'),

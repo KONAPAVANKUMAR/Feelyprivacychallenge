@@ -1,0 +1,53 @@
+{% extends 'logout.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-3">
+            <table class="container table table-striped">
+                <tr class="bg-primary">
+                    <th class="text-light">Select Manager</th>
+                </tr>
+                {% for manager in managers %}
+                <tr>
+                   <td><a class="text-dark" href="/employee/schedule/{{manager.id}}/">{{manager.username}}</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-9">
+            <div id="calendar"></div>
+            <!-- <table style="width: 100%;" class="table table-striped">
+                <tr>
+                    <th>Meeting</th>
+                </tr>
+                {% for meeting in meetings %}
+                <tr>
+                    <td>{{meeting.datetime}}</td>
+                </tr>
+                {% endfor %}
+            </table> -->
+
+        </div>
+
+    
+    </div>
+</div>
+
+<script>
+
+    
+    // jquery document ready
+    $( document ).ready(function() {
+        $('#calendar').evoCalendar({
+            theme : 'Royal Navy',
+        })
+    });
+
+</script>
+
+{% endblock %}
+
+

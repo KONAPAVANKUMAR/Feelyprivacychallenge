@@ -1,5 +1,29 @@
 {% extends 'logout.html' %}
 {% load static %}
 {% block content %}
-<h1>Employee Homepage</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <table class="container mt-5 table table-striped">
+                <tr class="bg-primary">
+                    <th class="text-light">Select Manager</th>
+                </tr>
+                {% for manager in managers %}
+                <tr>
+                   <td><a class="text-dark" href="/employee/schedule/{{manager.id}}/">{{manager.username}}</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-6">
+            <div class="calendar">
+
+            </div>
+        </div>
+        <div class="col-3"></div>
+    
+    </div>
+    
+    
+</div>
 {% endblock %}
