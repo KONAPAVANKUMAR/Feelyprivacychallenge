@@ -11,6 +11,6 @@ urlpatterns = [
     path('employee/', employeeHomePageView, name='employeehomepage'),
 
     # crud operations
-    path('manager/create/', createMeeting, name='createmeeting'),
-    path('manager/<int:pk>/delete/', deleteMeeting),
+    path('meeting/create/', createMeeting, name='createmeeting'),
+    path('meeting/<str:id>/delete/', deleteMeeting),
 ]

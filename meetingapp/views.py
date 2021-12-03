@@ -3,7 +3,7 @@ from django.contrib.auth import login,logout,authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
 from pymongo import MongoClient
-
+from bson.objectid import ObjectId
 import pymongo 
     
     
@@ -70,16 +70,31 @@ def employeeLogin(request):
         messages.error(request, 'Invalid credentials')
         return redirect('/')
 
+def addIdField(thisCursor):
+    thisList = list(thisCursor)
+    for idx in range(len(thisList)):
+        thisList[idx]['id'] = thisList[idx]['_id']
+    return thisList
+
 def managerHomePageView(request):
-    meetings = MeetingModel.objects.filter(manager=request.user)
-    meetingmodelcollection = db["meetingapp_meetingmodel"] 
-    meetings = meetingmodelcollection.find({})
-    print([meeting for meeting in meetings])
-    context = {'meetings':meetings}
-    
+    if not request.user.is_authenticated:
+        messages.add_message(request, messages.INFO, 'Please login to continue')
+        return redirect('landingpage')
+    if not request.user.is_staff:
+        messages.add_message(request, messages.INFO, 'You are not authorized to view this page')
+        return redirect('landingpage')
+    currentManagerId = request.user.id
+    meetings = db["meetingapp_meetingmodel"].find({'manager_id':currentManagerId})
+    context = {'meetings':addIdField(meetings)}
     return render(request, 'meetingapp/managerhomepage.html',context)
 
 def employeeHomePageView(request):
+    if not request.user.is_authenticated:
+        messages.add_message(request, messages.INFO, 'Please login to continue')
+        return redirect('landingpage')
+    if request.user.is_staff:
+        messages.add_message(request, messages.INFO, 'You are not authorized to view this page')
+        return redirect('landingpage')
     return render(request, 'meetingapp/employeehomepage.html')
 
 def logoutUser(request):
@@ -87,14 +102,25 @@ def logoutUser(request):
     return redirect('landingpage')
 
 from .models import MeetingModel
-# crud operations for meeting
-# pending <-- authorisation
+
 def createMeeting(request):
+    if not request.user.is_authenticated:
+        messages.add_message(request, messages.INFO, 'Please login to continue')
+        return redirect('landingpage')
+    if not request.user.is_staff:
+        messages.add_message(request, messages.INFO, 'You are not authorized to view this page')
+        return redirect('landingpage')
     MeetingModel(datetime = request.POST['datetime'],manager = request.user).save()
     return redirect('managerhomepage')
 
 def deleteMeeting(request,id):
-    MeetingModel.objects.filter(id=id).delete()
+    if not request.user.is_authenticated:
+        messages.add_message(request, messages.INFO, 'Please login to continue')
+        return redirect('landingpage')
+    if not request.user.is_staff:
+        messages.add_message(request, messages.INFO, 'You are not authorized to view this page')
+        return redirect('landingpage')
+    db["meetingapp_meetingmodel"].delete_one({'_id':ObjectId(id)})
     return redirect('managerhomepage')
 
 

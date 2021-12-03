@@ -3,6 +3,7 @@
 {% block content %}
 
 
+
 <!-- 
 <div class="container mt-5">
     <div class="row">
@@ -17,12 +18,17 @@
     
 </div> -->
 
+<div class="alert alert-info">
+    <h5 class="text-center">Welcome {{request.user.username}}</h5>
+</div>
+
 <table class="table table-striped container mt-5">
     <tr class="bg-primary">
 
         <th class="text-light"><h4>Your Meetings</h4></th>
         <th style="width: 20%;">
             <form class="d-flex justify-content-center" method="post" action="{% url 'createmeeting' %}">
+                {% csrf_token %}
                 <input type="datetime-local" name="datetime" class="form-control form-control-sm" id="meeting_time" required>
                 <button type="submit" class="ms-1 btn btn-sm btn-light">Add</button>
             </form>
@@ -31,7 +37,7 @@
     {% for meeting in meetings %}
     <tr>
         <td>{{meeting.datetime}}</td>
-        <td><a href="/meeting/{{ meeting }}/delete/" class="btn btn-sm btn-danger">Delete</a></td>
+        <td><a href="/meeting/{{ meeting.id }}/delete/" class="btn btn-sm btn-danger">Delete</a></td>
     </tr>
     {% endfor %}
 </table>
