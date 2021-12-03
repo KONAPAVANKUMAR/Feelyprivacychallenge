@@ -1,6 +1,9 @@
 {% extends 'logout.html' %}
 {% load static %}
 {% block content %}
+<div class="alert alert-info">
+    <h5 class="text-center">Welcome {{request.user.username}}</h5>
+</div>
 <div class="container">
     <div class="row">
         <div class="col-3">

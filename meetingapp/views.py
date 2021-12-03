@@ -134,10 +134,25 @@ def employeeScheduleView(request,id):
         messages.add_message(request, messages.INFO, 'You are not authorized to view this page')
         return redirect('landingpage')
     managers = db["auth_user"].find({'is_staff' : True,'is_superuser' : False})
+    employees = db["auth_user"].find({'is_staff' : False})
     meetings = db["meetingapp_meetingmodel"].find({'manager_id':id})
     
-    context = {'meetings':addIdField(meetings),'managers' : managers}
+    context = {
+        'meetings':addIdField(meetings),
+        'managers' : managers,
+        'employees' : employees
+        }
     return render(request, 'meetingapp/schedules.html',context)
 
+def bookMeeting(request,id,employeeid):
+    if not request.user.is_authenticated:
+        messages.add_message(request, messages.INFO, 'Please login to continue')
+        return redirect('landingpage')
+    if request.user.is_staff:
+        messages.add_message(request, messages.INFO, 'You are not authorized to view this page')
+        return redirect('landingpage')
+    db["meetingapp_meetingmodel"].update_one({'_id':ObjectId(id)},{'$set':{'employee_id':employeeid}})
+    return redirect(request.META['HTTP_REFERER'])
+    
 
 

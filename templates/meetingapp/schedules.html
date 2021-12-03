@@ -2,10 +2,14 @@
 {% load static %}
 {% block content %}
 
-
+<!-- vuejs cdn -->
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<div class="alert alert-info">
+    <h5 class="text-center">Welcome {{request.user.username}}</h5>
+</div>
 <div class="container">
     <div class="row mt-5">
-        <div class="col-3">
+        <div class="col-lg-3">
             <table class="container table table-striped">
                 <tr class="bg-primary">
                     <th class="text-light">Select Manager</th>
@@ -17,35 +21,131 @@
                 {% endfor %}
             </table>
         </div>
-        <div class="col-9">
-            <div id="calendar"></div>
-            <!-- <table style="width: 100%;" class="table table-striped">
-                <tr>
-                    <th>Meeting</th>
+        <div id="calendar" class="col-lg-6">
+
+            <div class="row">
+                <div class="col-3">
+                    <a href="#" @click="onPrevClick()" class="container btn btn-primary">Prev</a>
+                </div>
+                <div class="col-6 text-center">
+                    <h5>[[todayDate]]</h5>
+                    
+                </div>
+                <div class="col-3">
+                    <a href="#" @click="onNextClick()" class="container btn btn-primary">Next</a>
+                </div>
+            </div>
+
+            <table class="table table-striped mt-3">
+                <tr class="bg-primary ">
+                    <th class="text-light">Scheduled Meetings</th>
+                    <th class="text-light">Action</th>
                 </tr>
-                {% for meeting in meetings %}
-                <tr>
-                    <td>{{meeting.datetime}}</td>
+
+                <tr v-for="(schedule, index) in todaySchedules" :key="index">
+                    <td>
+                        <p v-for="schedule in schedule.slice(0, 1)">[[schedule]]</p>
+                    </td>
+                    <td>
+                        <div v-for="employeeid in schedule.slice(3,4)">
+                            <div v-if="employeeid!==`None`">
+                                <div v-for="scheduleid in schedule.slice(4,5)">
+                                    <a @click="showOccupiedAlert(employeeid)" class="btn  btn-sm btn-warning">Occupied</a>
+                                </div>
+                            </div>
+                            <div v-else>
+
+                                <div v-for="scheduleid in schedule.slice(4,5)">
+                                    <a :href="`/meeting/`+scheduleid+`/book/{{request.user.id}}/`" class="btn  btn-sm btn-outline-primary">Book</a>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                    </td>
                 </tr>
-                {% endfor %}
-            </table> -->
+            </table>
+            
 
         </div>
-
-    
+        <div class="col-lg-3"></div>    
     </div>
 </div>
 
 <script>
+    new Vue({
+        el : '#calendar',
+        delimiters : ['[[',']]'],
+        data : {
+            todayDate : new Date().toDateString(),
+            schedules : [],
+            todaySchedules : [],
+            employees : [],
+        },
+        methods : {
 
-    
-    // jquery document ready
-    $( document ).ready(function() {
-        $('#calendar').evoCalendar({
-            theme : 'Royal Navy',
-        })
-    });
+            onPrevClick : function(){
+                this.todayDate = new Date(this.todayDate).setDate(new Date(this.todayDate).getDate() - 1);
+                this.todayDate = new Date(this.todayDate).toDateString();
 
+                this.todaySchedules = this.schedules.filter(function(schedule){
+                var scheduleDate = new Date(schedule[1]);
+                scheduleDate = [scheduleDate.getDate(),scheduleDate.getMonth()+1,scheduleDate.getFullYear()].join('/');
+                var todayDate = new Date(this.todayDate);
+                todayDate = [todayDate.getDate(),todayDate.getMonth()+1,todayDate.getFullYear()].join('/');
+                    return scheduleDate == todayDate;
+                },this);
+                
+
+
+            },
+
+            onNextClick : function(){
+                this.todayDate = new Date(this.todayDate).setDate(new Date(this.todayDate).getDate() + 1);
+                this.todayDate = new Date(this.todayDate).toDateString();
+
+                this.todaySchedules = this.schedules.filter(function(schedule){
+                var scheduleDate = new Date(schedule[1]);
+                scheduleDate = [scheduleDate.getDate(),scheduleDate.getMonth()+1,scheduleDate.getFullYear()].join('/');
+                var todayDate = new Date(this.todayDate);
+                todayDate = [todayDate.getDate(),todayDate.getMonth()+1,todayDate.getFullYear()].join('/');
+                    return scheduleDate == todayDate;
+                },this);
+            },
+
+            showOccupiedAlert : function(employeeid){
+                // get employee name
+                var employee = this.employees.filter(function(employee){
+                    return employee.id == employeeid;
+                });
+                alert(employee[0].username+ " is already occupied");
+            }
+
+        },
+
+        created : function(){
+            this.schedules = [];
+            {% for meeting in meetings %}
+                this.schedules.push(['{{meeting.datetime}}','{{meeting.datetime.date}}','{{meeting.manager_id}}','{{meeting.employee_id}}','{{meeting.id}}']);
+            {% endfor %}
+
+            this.todaySchedules = this.schedules.filter(function(schedule){
+                var scheduleDate = new Date(schedule[1]);
+                scheduleDate = [scheduleDate.getDate(),scheduleDate.getMonth()+1,scheduleDate.getFullYear()].join('/');
+                var todayDate = new Date(this.todayDate);
+                todayDate = [todayDate.getDate(),todayDate.getMonth()+1,todayDate.getFullYear()].join('/');
+                return scheduleDate == todayDate;
+            },this);
+
+            {% for employee in employees %}
+                this.employees.push({'id' : '{{employee.id}}','username' : '{{employee.username}}'});
+            {% endfor %}
+
+            console.log(this.employees);
+
+        },
+    })
 </script>
 
 {% endblock %}

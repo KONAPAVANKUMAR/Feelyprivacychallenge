@@ -10,8 +10,8 @@ urlpatterns = [
     path('manager/', managerHomePageView, name='managerhomepage'),
     path('employee/', employeeHomePageView, name='employeehomepage'),
     path('employee/schedule/<int:id>/',employeeScheduleView, name='employeeschedulepage'),
-
     # crud operations
     path('meeting/create/', createMeeting, name='createmeeting'),
     path('meeting/<str:id>/delete/', deleteMeeting),
+    path('meeting/<str:id>/book/<int:employeeid>/', bookMeeting),
 ]
